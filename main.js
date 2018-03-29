@@ -1,8 +1,23 @@
 #!/usr/bin/env node
 const TeleBot = require('telebot');
-const bot = new TeleBot('398889955:AAFxjVgOxWPhxO7S-xKy_sc6A90mFZpQ6Rk');
+// miatafaq_bot
+const bot = new TeleBot({
+    token:'398889955:AAFxjVgOxWPhxO7S-xKy_sc6A90mFZpQ6Rk',
+    usePlugins: ['botan'],
+    pluginConfig: {
+        botan: 'ede451c4-aff9-4461-b4d4-964d3663694b'
+    }
+});
 
-bot.on('/масло_мотор', (msg) => msg.reply.text('В мотор 2.0 5w40, 5w30 4.5л\n' +
+// renats_bot
+// const bot = new TeleBot({
+//     token:'584587074:AAEj3lrer4dsh21uxPBgt9M92eMHrSXLDZY',
+//     usePlugins: ['botan'],
+//     pluginConfig: {
+//         botan: 'f51b5469-f20b-436b-a43a-7ce341dcfb82'
+//     }
+// });
+bot.on(['/масло_мотор','/масло'], (msg) => msg.reply.text('В мотор 2.0 5w40, 5w30 4.5л\n' +
     'В мотор 1.8 5w40, 5w30 4.2л\n' +
     'менять раз в 8-10тыс. км\n' +
     'Масляный фильтр SHY114302\n' +
@@ -90,7 +105,10 @@ bot.on(['/стойки','/втулки'], (msg) => msg.reply.text('Стойка 
     'Втулка стаба зад NF53-28-156B\n'))
 bot.on('/диски', (msg) => msg.reply.text('17\" 5x114.3 ширина 7 вылет 55 цо 67.1'))
 bot.on('/стабы', (msg) => msg.reply.photo('./rollbars.jpg'))
-
+bot.on('/сайлентблоки', (msg) => msg.reply.photo('Оригинал или полиуретан\n'+
+    'Например Energy Suspension 11.18104'))
+bot.on(['/lol','/лол'], (msg) => msg.reply.photo('хуелол'))
+// bot.on('/крышка_бачка_омывателя', (msg) => msg.reply.photo('D350-67-483'))
 bot.on('/faq', (msg) => msg.reply.text('/масло_мотор\n' +
     '/масло_акпп\n' +
     '/масло_мкпп\n' +
@@ -127,6 +145,7 @@ bot.on('/faq', (msg) => msg.reply.text('/масло_мотор\n' +
     '/тюнячка\n'+
     '/рулевая_тяга\n'+
     '/стойки\n'+
-    '/диски'))
+    '/диски\n'+
+    '/lol'))
 
 bot.start();
