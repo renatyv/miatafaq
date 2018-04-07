@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const TeleBot = require('telebot');
 const user_added_commands_filename = 'user_commands.json';
-miatafaq_bot
+// miatafaq_bot
 const bot = new TeleBot({
     token:'398889955:AAFxjVgOxWPhxO7S-xKy_sc6A90mFZpQ6Rk',
     usePlugins: ['botan'],
