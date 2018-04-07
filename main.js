@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const TeleBot = require('telebot');
 const user_added_commands_filename = 'user_commands.json';
-// miatafaq_bot
+miatafaq_bot
 const bot = new TeleBot({
     token:'398889955:AAFxjVgOxWPhxO7S-xKy_sc6A90mFZpQ6Rk',
     usePlugins: ['botan'],
@@ -48,7 +48,6 @@ function addCommand(msg,new_command,new_command_result){
                     console.log('is administrator');
                     user_added_commands[new_command]=new_command_result;
                     saveCommandsToFile(user_added_commands)
-                    console.log(user_added_commands);
                     msg.reply.text(new_command+' добавлено в faq');
                 }else{
                     msg.reply.text('Только админы пополняют faq');
@@ -68,33 +67,35 @@ function execUserCommand(msg,props){
     console.log(msg.chat);
     command = props.match[1];
     switch(command) {
+        case 'start':
+        case 'all':
         case 'faq':
             console.log('/faq');
-            // console.log(Object.keys(user_added_commands).join(', '));
             var slashed_commands = Object.keys(user_added_commands).map((command)=>'/'+command);
             var list_of_commands = slashed_commands.join(', ');
             return msg.reply.text(list_of_commands);
             break;
-        case 'add':
-            var new_command_string = props.match[2].trim();
-            console.log('/add '+new_command_string);
-            match_result = new_command_string.match(/([0-9a-zA-Zа-яА-Я_]+) (.+)$/);
-            if (match_result){
-                new_command = match_result[1];
-                new_command_result = match_result[2];
-                return addCommand(msg,new_command,new_command_result);
-            }else{
-                return msg.reply('/add ваша_команда__123 результат');
-            }
-            break;
+        // case 'add':
+        //     var new_command_string = props.match[2].trim();
+        //     console.log('/add '+new_command_string);
+        //     match_result = new_command_string.match(/([0-9a-zA-Zа-яА-Я_ёЁ]+) (.+)$/);
+        //     if (match_result){
+        //         new_command = match_result[1];
+        //         new_command_result = match_result[2];
+        //         return addCommand(msg,new_command,new_command_result);
+        //     }else{
+        //         console.log('match error:');
+        //         console.log(match_result);
+        //         return msg.reply.text('/add команда результат'); 
+        //     }
+        //     break;
         default:
             if (Object.prototype.hasOwnProperty.call(user_added_commands,command)){
-                console.log('command /'+command+' is in the datastore');
+                console.log('executing /'+command+' from the datastore');
                 return msg.reply.text(user_added_commands[command]);
             }else{
                 console.log('command /'+command+' is unknown');
-                return msg.reply.text('Не знаю "'+command+'". Добавить так:\n'+
-                    '/add '+command+' _новый_результат_');
+                return msg.reply.text('Не знаю "'+command);
             }
     }
 }
