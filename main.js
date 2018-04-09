@@ -9,6 +9,7 @@ const bot = new TeleBot({
         botan: 'ede451c4-aff9-4461-b4d4-964d3663694b'
     }
 });
+
 const fs = require('fs');
 
 const filename = 'commands.json';
@@ -18,17 +19,17 @@ function loadCommandsFromFile(){
     return JSON.parse(rawdata);
 }
 
-function saveCommandsToFile(commands){
-    let data = JSON.stringify(commands,(k,v)=>v,1);  
-    fs.writeFile(filename, data,(err) => {
-      if (err){
-        console.log('File save error!.');
-      }else{
-        console.log('The file has been updated.');  
-      }
-    });
-    return;
-}
+// function saveCommandsToFile(commands){
+//     let data = JSON.stringify(commands,(k,v)=>v,1);  
+//     fs.writeFile(filename, data,(err) => {
+//       if (err){
+//         console.log('File save error!.');
+//       }else{
+//         console.log('The file has been updated.');  
+//       }
+//     });
+//     return;
+// }
 
 const reserved_commands_array=['add','faq','мануал','стабы_рыксы'];
 var user_added_commands = loadCommandsFromFile();
@@ -63,7 +64,7 @@ function addCommand(msg,new_command,new_command_result){
 
 function execUserCommand(msg,props){
     console.log(msg.chat);
-    command = props.match[1];
+    command = props.match[1].toLowerCase();
     switch(command) {
         case 'стабы_рыксы':
             msg.reply.photo('./rollbars.jpg');
