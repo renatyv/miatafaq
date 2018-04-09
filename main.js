@@ -9,7 +9,6 @@ const bot = new TeleBot({
         botan: 'ede451c4-aff9-4461-b4d4-964d3663694b'
     }
 });
-
 const fs = require('fs');
 
 const filename = 'commands.json';
@@ -31,7 +30,7 @@ function saveCommandsToFile(commands){
     return;
 }
 
-const reserved_commands_array=['add','faq','мануал'];
+const reserved_commands_array=['add','faq','мануал','стабы_рыксы'];
 var user_added_commands = loadCommandsFromFile();
 
 function addCommand(msg,new_command,new_command_result){
@@ -66,17 +65,18 @@ function execUserCommand(msg,props){
     console.log(msg.chat);
     command = props.match[1];
     switch(command) {
-        case 'start':
-        case 'стабы':
+        case 'стабы_рыксы':
             msg.reply.photo('./rollbars.jpg');
             break;
         case 'мануал':
             bot.sendDocument(msg.chat.id,'BQADAgADZAEAAsZOUErgsF44EGVsdgI');
             break;
         case 'all':
+        case 'start':
         case 'faq':
             console.log('/faq');
-            var slashed_commands = Object.keys(user_added_commands).map((command)=>'/'+command).concat(['/мануал']);
+            additional_commands = ['/стабы_рыксы','/мануал']
+            var slashed_commands = Object.keys(user_added_commands).map((command)=>'/'+command).concat(additional_commands);
             var list_of_commands = slashed_commands.join(', ');
             return msg.reply.text(list_of_commands);
             break;
