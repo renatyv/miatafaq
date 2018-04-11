@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 const TeleBot = require('telebot');
 // miatafaq_bot
-// const bot = new TeleBot({
-//     token:'398889955:AAFxjVgOxWPhxO7S-xKy_sc6A90mFZpQ6Rk',
-//     usePlugins: ['botan'],
-//     pluginConfig: {
-//         botan: 'ede451c4-aff9-4461-b4d4-964d3663694b'
-//     }
-// });
-const bot = new TeleBot('584587074:AAEj3lrer4dsh21uxPBgt9M92eMHrSXLDZY');
+const bot = new TeleBot({
+    token:'398889955:AAFxjVgOxWPhxO7S-xKy_sc6A90mFZpQ6Rk',
+    usePlugins: ['botan'],
+    pluginConfig: {
+        botan: 'ede451c4-aff9-4461-b4d4-964d3663694b'
+    }
+});
 
 const spb_miataclub_chat_id = -28715622;
 const tech_chat_id = -1001145216568;
