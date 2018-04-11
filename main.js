@@ -9,6 +9,7 @@ const bot = new TeleBot({
     }
 });
 
+
 const spb_miataclub_chat_id = -28715622;
 const tech_chat_id = -1001145216568;
 const miataclub_id = -1001095126053;
@@ -96,35 +97,45 @@ function addCommand(msg){
 
 function execUserCommand(msg,props){
     console.log(msg.chat);
-    command = props.match[1].toLowerCase();
-    switch(command) {
-        case 'стабы_рыксы':
-            msg.reply.photo('./rollbars.jpg');
-            break;
-        case 'мануал':
-            bot.sendDocument(msg.chat.id,'BQADAgADZAEAAsZOUErgsF44EGVsdgI');
-            break;
-        case 'all':
-        case 'start':
-        case 'faq':
-            console.log('/faq');
-            additional_commands = ['/стабы_рыксы','/мануал']
-            var slashed_commands = Object.keys(commands).map((command)=>'/'+command).concat(additional_commands);
-            var list_of_commands = slashed_commands.join(', ');
-            return msg.reply.text(list_of_commands);
-            break;
-        case 'add':
-            console.log('/add');
-            addCommand(msg);
-            break;
-        default:
-            if (Object.prototype.hasOwnProperty.call(commands,command)){
-                console.log('executing /'+command+' from the datastore');
-                return msg.reply.text(commands[command]);
-            }else{
-                console.log('command /'+command+' is unknown');
-                return msg.reply.text('Не знаю /'+command);
+    try{
+        command = props.match[1].toLowerCase();
+        switch(command) {
+            case 'стабы_рыксы':
+                msg.reply.photo('./rollbars.jpg');
+                break;
+            case 'мануал':
+                msg.reply.text('#manual');
+                var promise = bot.sendDocument(msg.chat.id,'./workshop_repair_manual.pdf');
+                promise.then(function(result){
+                    console.log('manual sent');
+                },function(error){
+                    console.log(error);
+                })
+                break;
+            case 'all':
+            case 'start':
+            case 'faq':
+                console.log('/faq');
+                additional_commands = ['/стабы_рыксы','/мануал']
+                var slashed_commands = Object.keys(commands).map((command)=>'/'+command).concat(additional_commands);
+                var list_of_commands = slashed_commands.join(', ');
+                return msg.reply.text(list_of_commands);
+                break;
+            case 'add':
+                console.log('/add');
+                addCommand(msg);
+                break;
+            default:
+                if (Object.prototype.hasOwnProperty.call(commands,command)){
+                    console.log('executing /'+command+' from the datastore');
+                    return msg.reply.text(commands[command]);
+                }else{
+                    console.log('command /'+command+' is unknown');
+                    return msg.reply.text('Не знаю /'+command);
+                }
             }
+    }catch(err){
+        console.log(err);
     }
 }
 
