@@ -57,3 +57,5 @@ typings/
 # dotenv environment variables file
 .env
 
+# user added commands are ignored
+user_commands.json
