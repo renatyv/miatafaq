@@ -100,6 +100,15 @@ function execUserCommand(msg,props){
     try{
         command = props.match[1].toLowerCase();
         switch(command) {
+            case 'крюк_крыши':
+                msg.reply.text('мануал по подтягиванию крюка крыши');
+                var promise = bot.sendDocument(msg.chat.id,'./roof-manual.pdf');
+                promise.then(function(result){
+                    console.log('roof manual sent');
+                },function(error){
+                    console.log(error);
+                })
+                break;
             case 'стабы_рыксы':
                 msg.reply.photo('./rollbars.jpg');
                 break;
