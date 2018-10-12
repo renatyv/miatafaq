@@ -5,7 +5,7 @@ const bot = new TeleBot({
     token:'398889955:AAFxjVgOxWPhxO7S-xKy_sc6A90mFZpQ6Rk',
     usePlugins: ['botan'],
     pluginConfig: {
-        botan: 'ede451c4-aff9-4461-b4d4-964d3663694b'
+        botan: '1baed33c-10a1-41fb-9ead-834969b92008'
     }
 });
 
