@@ -1,13 +1,9 @@
 #!/usr/bin/env node
 const TeleBot = require('telebot');
-// miatafaq_bot
-const bot = new TeleBot({
-    token:'398889955:AAFxjVgOxWPhxO7S-xKy_sc6A90mFZpQ6Rk',
-    usePlugins: ['botan'],
-    pluginConfig: {
-        botan: '1baed33c-10a1-41fb-9ead-834969b92008'
-    }
-});
+const miatafaq_token = '398889955:AAFxjVgOxWPhxO7S-xKy_sc6A90mFZpQ6Rk';
+// test token
+const renats_bot_token = '584587074:AAEj3lrer4dsh21uxPBgt9M92eMHrSXLDZY';
+const bot = new TeleBot(renats_bot_token);
 
 
 const spb_miataclub_chat_id = -28715622;
@@ -17,89 +13,21 @@ const test_bots_chat_id = -217181742;
 
 const fs = require('fs');
 
-function loadCommandsFromFile(filename){
+function loadMapFromFile(filename){
     let rawdata = fs.readFileSync(filename);  
     return JSON.parse(rawdata);
 }
 
-function saveCommandsToFile(filename,commands){
-    let data = JSON.stringify(commands,(k,v)=>v,1);
-    fs.writeFile(filename, data,(err) => {
-      if (err){
-        console.log('File save error!.');
-      }else{
-        console.log('The file '+filename+' has been updated.');
-        console.log(commands);  
-      }
-    });
-    return;
-}
-
-const reserved_commands_array=['add','faq','мануал','стабы_рыксы'];
-
-const default_commands_filename = 'default_commands.json';
-var default_commands = loadCommandsFromFile(default_commands_filename);
-const user_added_commands_filename = 'user_commands.json';
-var user_added_commands = loadCommandsFromFile(user_added_commands_filename);
-var commands = Object.assign(default_commands,user_added_commands);
-
-
-function parseNewCommand(msg){
-    regexp = /\/add ([0-9a-zA-Zа-яА-Я_ёЁ]+)/;
-    match_result = msg.text.match(regexp);
-    console.log(match_result);
-    if (match_result){
-        new_command = match_result[1].toLowerCase();
-        new_command_result = msg.text.replace(regexp,'');
-        return {command:new_command,result:new_command_result};
-    }else{
-        console.log('match error');
-        return -1; 
-    }
-}
-
-function addCommand(msg){
-    var chat_id = msg.chat.id;
-    if((chat_id === tech_chat_id)|| (chat_id === miataclub_id) || (chat_id === test_bots_chat_id)){
-        var user_id = msg.from.id;
-        var chat_member_promise = bot.getChatMember(msg.chat.id,msg.from.id);
-        chat_member_promise.then(function(result) {
-                if (result.ok){
-                    var chat_member = result.result;
-                    if (chat_member.status === 'administrator'){
-                        console.log(chat_member.user.id+' is administrator');
-                        var parsed_command = parseNewCommand(msg);
-                        if (parsed_command === -1){
-                            msg.reply.text('/add команда результат');
-                        }else{
-                            user_added_commands[parsed_command.command]=parsed_command.result;
-                            commands[parsed_command.command]=parsed_command.result;
-                            saveCommandsToFile(user_added_commands_filename,user_added_commands);
-                            console.log('команда "'+new_command+'" добавлена в faq');
-                            msg.reply.text('команда "'+new_command+'" добавлена в faq');    
-                        }
-                    }else{
-                        msg.reply.text('Только админы пополняют faq');
-                        console.log('not admin id='+chat_member.user.id+' tried to add command');
-                    }    
-                }else{
-                    console.log(result);    
-                }
-            }, function(err) {
-                console.log('promise error');
-                console.log(err);
-            });
-    }else{
-        console.log('wrong chat '+chat_id);
-        msg.reply.text('Добавлять могут только админы в чате Miataclub.ru или техчате');
-    }
-}
+var requests_answers_map = loadMapFromFile('text_commands.json');
+console.log('loading request maps\n'+Object.keys(requests_answers_map));
 
 function execUserCommand(msg,props){
-    console.log(msg.chat);
+    // console.log(props);
     try{
-        command = props.match[1].toLowerCase();
-        switch(command) {
+        request = props.match[1].toLowerCase();
+        console.log(request);
+        switch(request) {
+            // non text commands
             case 'крюк_крыши':
                 msg.reply.text('мануал по подтягиванию крюка крыши');
                 var promise = bot.sendDocument(msg.chat.id,'./roof-manual.pdf');
@@ -121,26 +49,23 @@ function execUserCommand(msg,props){
                     console.log(error);
                 })
                 break;
+            // list all commands
             case 'all':
             case 'start':
             case 'faq':
-                console.log('/faq');
-                additional_commands = ['/стабы_рыксы','/мануал']
-                var slashed_commands = Object.keys(commands).map((command)=>'/'+command).concat(additional_commands);
-                var list_of_commands = slashed_commands.join(', ');
-                return msg.reply.text(list_of_commands);
+                non_text_requests = ['/стабы_рыксы','/мануал']
+                var slashed_requests = Object.keys(requests_answers_map).map((request)=>'/'+request).concat(non_text_requests);
+                var list_of_requests = slashed_requests.join(', ');
+                return msg.reply.text(list_of_requests);
                 break;
-            case 'add':
-                console.log('/add');
-                addCommand(msg);
-                break;
+            // text commands
             default:
-                if (Object.prototype.hasOwnProperty.call(commands,command)){
-                    console.log('executing /'+command+' from the datastore');
-                    return msg.reply.text(commands[command]);
+                if (Object.prototype.hasOwnProperty.call(requests_answers_map,request)){
+                    console.log('answering /'+request+' from the text map');
+                    return msg.reply.text(requests_answers_map[request]);
                 }else{
-                    console.log('command /'+command+' is unknown');
-                    return msg.reply.text('Не знаю /'+command);
+                    console.log('command /'+request+' is unknown');
+                    return msg.reply.text('Не знаю /'+request);
                 }
             }
     }catch(err){
